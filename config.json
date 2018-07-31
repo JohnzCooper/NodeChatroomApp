@@ -1,0 +1,9 @@
+{
+    "dbPort": 27017,
+    "dbHost": "mongodb://127.0.0.1:",
+    "dbName": "axinomChatBox",
+    "socketUrl":"http://127.0.0.1:",
+    "socketPort": "4000",
+    "chatrooms": ["#Axinom"]
+    
+}
