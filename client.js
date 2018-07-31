@@ -27,7 +27,7 @@ var alert = function (message) {
         $("#alert").slideUp(500);
     });
 }
-
+//nick name validation
 $('#btnNickName').click(function () {
     var length = txtUserName.val().length;
     if (length != 0 && length < 13) {
@@ -36,7 +36,7 @@ $('#btnNickName').click(function () {
             socket.emit('nickname', txtUserName.val(), function (set) {
                 console.log(set);
                 if (!set) {
-                    //clear();
+                    //create nickname div
                     chatRooms.append('<label type="button" class="form-control" style="background-color: gold" id="'+ txtUserName.val() +'">' + txtUserName.val() + '</label>');
                     //privateChatrooms.append('<label type="button" class="form-control" style="background-color: gold" >' + txtUserName.val() + '</label>');
                     $("#chatArea").show();
@@ -64,12 +64,14 @@ $('#btnNickName').click(function () {
     }
 });
 
+//get concurently login users
 socket.on('nickname', function (res) {
     console.log(res);
     chatRooms.append('<label type="button" class="form-control" id="'+res+'">' + res + '</label>');
     privateChatrooms.append('<label type="button" class="form-control" id="pv'+res+'">' + res + '</label>');
 });
 
+//get users disconected list
 socket.on('nicknames', function (res) {
     console.log(res);
     chatRooms.empty();
@@ -81,7 +83,7 @@ socket.on('nicknames', function (res) {
         privateChatrooms.append('<label type="button" class="form-control" id="pv'+element+'">' + element + '</label>');
     });
 });
-
+//listning to annoucements during login and disconnection
 socket.on('announcement', function (res) {
     console.log('loged user data :' + res);
     var messages = $("#messages");
@@ -92,7 +94,7 @@ socket.on('announcement', function (res) {
     messages.append(message);
 
 });
-
+//listning to incomming chat room messages
 socket.on('user message', message);
 
 btnSubmitChat.click(function () {
@@ -102,7 +104,7 @@ btnSubmitChat.click(function () {
         textarea.val("");
     }
 });
-
+//create message showing div
 function message(from, msg, dateTime) {
     // Build out message div
     var message = document.createElement('div');
@@ -110,13 +112,6 @@ function message(from, msg, dateTime) {
     message.textContent = dateTime + '- ' + from + ": " + msg;
     messages.append(message);
 }
-
-// chatRooms.each(function(){
-//     var $element = $(this)
-//     $element.click(function(){
-//         alert($(this).val());
-//     });
-// }); 
 
 chatRooms.on("click","label", function(){
     alert("Start private chat with : "+$(this).text());
@@ -175,8 +170,8 @@ privateChatrooms.on("click","label", function(){
 
     if(prvUser != room && prvUser != txtUserName.val()){
         console.log(prvUser);
-        $("#chatArea").hide();
-        privateChatArea.show();
+        $("#chatArea").show();
+        privateChatArea.hide();
         //privateMessages.empty();
         var divID = 'pv'+prvUser;
         $("#divID").css("background-color", "green");
@@ -184,8 +179,9 @@ privateChatrooms.on("click","label", function(){
             console.log(set);
             prvSocketID = set;
         });
-        
+
         socket.emit('getprivateMessage', prvUser, function(res){
+            console.log(res);
             prvMessage(res);
         });
     }
