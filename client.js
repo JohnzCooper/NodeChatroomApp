@@ -36,7 +36,7 @@ $('#btnNickName').click(function () {
                 if (!set) {
                     //clear();
                     chatRooms.append('<label type="button" class="form-control" style="background-color: gold" id="'+ txtUserName.val() +'">' + txtUserName.val() + '</label>');
-                    privateChatrooms.append('<label type="button" class="form-control" style="background-color: gold" >' + txtUserName.val() + '</label>');
+                    //privateChatrooms.append('<label type="button" class="form-control" style="background-color: gold" >' + txtUserName.val() + '</label>');
                     $("#chatArea").show();
                     $("#login").hide();
                     socket.on('default-nicknames', function (res) {
@@ -73,7 +73,7 @@ socket.on('nicknames', function (res) {
     chatRooms.empty();
     privateChatrooms.empty();
     chatRooms.append('<label type="button" class="form-control" style="background-color: gold" id="'+ txtUserName.val() +'">' + txtUserName.val() + '</label>');
-    privateChatrooms.append('<label type="button" class="form-control" style="background-color: gold" id="pv'+ txtUserName.val() +'">' + txtUserName.val() + '</label>');
+    //privateChatrooms.append('<label type="button" class="form-control" style="background-color: gold" id="pv'+ txtUserName.val() +'">' + txtUserName.val() + '</label>');
     res.forEach(function (element) {
         chatRooms.append('<label type="button" class="form-control" id="'+element+'">' + element + '</label>');
         privateChatrooms.append('<label type="button" class="form-control" id="pv'+element+'">' + element + '</label>');
@@ -120,13 +120,13 @@ chatRooms.on("click","label", function(){
     alert("Start private chat with : "+$(this).text());
     prvChatTo = $(this).text();
 
-    if(prvChatTo != room){
+    if(prvChatTo != room && prvChatTo != txtUserName.val()){
         console.log(prvChatTo);
         $("#chatArea").hide();
         privateChatArea.show();
         privateMessages.empty();
         var divID = 'pv'+prvChatTo;
-       // $("#divID").css("background-color", "green");
+        $("#divID").css("background-color", "green");
     }
 //socket.emit('privateMessage', nick, )
 });
