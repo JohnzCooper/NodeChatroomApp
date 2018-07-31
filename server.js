@@ -77,7 +77,8 @@ mongo.connect(dbHost + dbPort, { useNewUrlParser: true }, function (err, db) {
             // io.to(socID).emit('privateMessage', socket.nickname, uname , message,dtNow);
             // io.socket(socID).emit();
             pvtMsgHistory.insert({ fromName: socket.nickname, toName: uname , message: message, dateTime: dtNow });
-            var qry = { $match: {$or: [{fromName: socket.nickname}, {toName: uname}]}}
+            //var qry = { $match: {$or: [{fromName: socket.nickname}, {toName: uname}]}}
+            var qry = {fromName: socket.nickname , toName: uname};
             pvtMsgHistory.find({qry}).toArray(function (error, res){
                 io.to(socID).emit('privateMessage', res);
             });
@@ -87,7 +88,8 @@ mongo.connect(dbHost + dbPort, { useNewUrlParser: true }, function (err, db) {
             // io.to(socID).emit('privateMessage', socket.nickname, uname , message,dtNow);
             // io.socket(socID).emit();
             console.log('hithistory');
-            var qry = { $match: {$or: [{fromName: socket.nickname}, {toName: uname}]}}
+            var qry = {fromName: socket.nickname , toName: uname};
+            //var qry = { $match: {$or: [{fromName: socket.nickname}, {toName: uname}]}}
             //pvtMsgHistory.find({fromName: socket.nickname , toName: uname, toName: socket.nickname, fromName: uname}).toArray(function (error, res){
             pvtMsgHistory.find({qry}).toArray(function (error, res){
                 fn(res);
