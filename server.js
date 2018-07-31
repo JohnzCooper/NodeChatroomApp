@@ -19,7 +19,7 @@ mongo.connect(dbHost + dbPort, { useNewUrlParser: true }, function (err, db) {
     var dbo = db.db(dbName);
     let nickNames = dbo.collection('nickNames');
     let msgHistory = dbo.collection('msgHistory');
-
+    let pvtMsgHistory = dbo.collection('pvtMsgHistory');
     //Get all users from db
     nickNames.find({}, { nickName: 1, _id: 0 }).toArray(function (error, res) {
         if (error) throw err;
@@ -71,12 +71,27 @@ mongo.connect(dbHost + dbPort, { useNewUrlParser: true }, function (err, db) {
             msgHistory.insert({ name: socket.nickname, message: msg, dateTime: dtNow });
         });
         //listning private messages from client
-        socket.on('privateMessage', function (to, message) {
-            nickNames.find({ nickName: to }).toArray(function (error, res) {
+        socket.on('privateMessage', function (uname,socID, message) {
+            var dt = dateTime.create();
+            var dtNow = dt.format('d.m.Y H:M:S');
+            // io.to(socID).emit('privateMessage', socket.nickname, uname , message,dtNow);
+            // io.socket(socID).emit();
+            pvtMsgHistory.insert({ fromName: socket.nickname, toName: uname , message: message, dateTime: dtNow });
+
+            pvtMsgHistory.find({fromName: socket.nickname , toName: uname, toName: socket.nickname, fromName: uname}).toArray(function (error, res){
+                io.to(socID).emit('privateMessage', res);
+            });
+        });
+
+        socket.on('socketid', function (name, fn) {
+            nickNames.find({ nickName: name }).toArray(function (error, res) {
                 if (error) throw err;
                 res.forEach(function (element) {
+                    console.log('Socket :'+element.socketID);
+                    fn(element.socketID)
+                    //socket.emit('socketid', element.socketID);
                     //io.to(element.socketID).emit('hey', 'I just met you');
-                    io.sockets.socket(element.socketID).emit('updatechat', socket.username, message);
+                    //io.sockets.socket(element.socketID).emit('updatechat', socket.username, message);
                 });
             });
         });
